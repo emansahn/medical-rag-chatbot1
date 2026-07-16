@@ -1,0 +1,5 @@
+# PERSON 3. The full application: backend + frontend. Deliberately does NOT
+# pull in person1-data.txt or person2-rag.txt — Person 3 runs the app in
+# mock mode and never needs those libraries to develop the product.
+-r backend.txt
+-r frontend.txt

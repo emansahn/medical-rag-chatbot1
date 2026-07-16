@@ -1,0 +1,42 @@
+"""Renders chat messages as styled bubbles with markdown, sources, and a copy button."""
+import streamlit as st
+
+
+def render_message(role: str, content: str, sources: list[dict] | None = None, msg_index: int = 0) -> None:
+    """Render a single chat message bubble.
+
+    Args:
+        role: "user" or "assistant".
+        content: Markdown-formatted message text.
+        sources: Optional list of {"title", "url", "excerpt"} citations.
+        msg_index: Index used to give Streamlit widgets unique keys.
+    """
+    is_user = role == "user"
+    label = "Vous" if is_user else "Assistant médical"
+
+    st.markdown(f'<div class="mc-role-label">{label}</div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="mc-bubble-row {role}"><div class="mc-bubble {role}">{content}</div></div>',
+        unsafe_allow_html=True,
+    )
+
+    if sources:
+        with st.expander(f"📚 Sources ({len(sources)})", expanded=False):
+            for src in sources:
+                st.markdown(
+                    f'<span class="mc-source-chip">{src["title"]}</span>',
+                    unsafe_allow_html=True,
+                )
+                st.caption(src.get("excerpt", ""))
+                if src.get("url"):
+                    st.markdown(f"[🔗 Voir la source]({src['url']})")
+
+    if not is_user:
+        st.code(content, language=None)  # provides Streamlit's built-in copy-to-clipboard icon
+
+
+def render_typing_indicator() -> None:
+    st.markdown(
+        '<div class="mc-typing"><span></span><span></span><span></span></div>',
+        unsafe_allow_html=True,
+    )

@@ -1,0 +1,6 @@
+# Convenience "install everything" file — useful for CI or a full demo box.
+# In day-to-day dev, install only what you need — see requirements/README.md.
+-r requirements/person3-app.txt
+-r requirements/person1-data.txt
+-r requirements/person2-rag.txt
+-r requirements/dev.txt

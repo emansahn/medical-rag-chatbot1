@@ -1,0 +1,5 @@
+# Shared by every part of the app (backend, frontend, both mock and real modes).
+# Nobody should ever need FAISS/LangChain/ChromaDB just to run the app in mock mode.
+pydantic==2.9.2
+pydantic-settings==2.5.2
+python-dotenv==1.0.1

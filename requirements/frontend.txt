@@ -1,0 +1,5 @@
+# Streamlit frontend. Only talks HTTP to the backend, so it never needs
+# FastAPI or any RAG library either.
+-r base.txt
+streamlit==1.38.0
+requests==2.32.3

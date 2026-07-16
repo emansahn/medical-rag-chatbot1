@@ -1,0 +1,6 @@
+# FastAPI backend. Installing this alone (with base.txt) is enough to run
+# `uvicorn src.backend.main:app` against MockRAGService/MockDatasetProvider —
+# no RAG libraries required.
+-r base.txt
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
