@@ -8,7 +8,7 @@ Why this exists:
     to the client.
 
 Who owns this:
-    Person 3 defines and wires the hierarchy. Person 1 and Person 2 are
+    Person 3 defines and wires the hierarchy. Person 1 and the Indexation & Moteur RAG module are
     encouraged to raise these (e.g. `RetrievalError`, `DocumentProcessingError`)
     from inside their own modules so errors surface consistently end-to-end.
 """
@@ -26,7 +26,7 @@ class AppException(Exception):
 
 
 class RAGEngineNotReadyError(AppException):
-    """Raised when the RAG pipeline (Person 2's engine) is not yet available."""
+    """Raised when the RAG pipeline (the Indexation & Moteur RAG engine) is not yet available."""
 
     status_code = 503
     default_message = "The RAG engine is not ready yet. It is still using a stub response."

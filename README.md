@@ -16,8 +16,9 @@ DATA_MODE=mock|real     # default: mock — sample documents/chunks, zero scrapi
 ```
 
 **The application boots and is fully demoable in mock mode today**, with
-realistic fake answers and sources, before Person 1 or Person 2 have written
-a line of code. See `docs/architecture.md` for the full rationale.
+realistic fake answers and sources, before the data-collection or
+Indexation & Moteur RAG work is finished. See `docs/architecture.md` for the
+full rationale.
 
 ## 2. Quick start (Person 3 / anyone demoing)
 
@@ -43,7 +44,7 @@ the API reference. Or run both with `bash scripts/run_dev.sh`.
 |---|---|
 | `rag_mode` | `mock` (default) or `real` |
 | `data_mode` | `mock` (default) or `real` |
-| `rag_engine_ready` | `True` only once Person 2's real engine reports ready |
+| `rag_engine_ready` | `True` only once the Indexation & Moteur RAG engine reports ready |
 | `chunks_indexed` | Count from whichever `ChunkProvider` is active |
 
 ## 4. Documentation

@@ -17,6 +17,7 @@ from src.core.logging_config import get_logger
 logger = get_logger(__name__)
 
 _TIMEOUT_SECONDS = 30
+_CHAT_TIMEOUT_SECONDS = 120  # local LLM generation (e.g. Ollama on CPU) can take well over 30s
 
 
 @dataclass
@@ -45,7 +46,7 @@ class BackendClient:
 
     def send_message(self, question: str, conversation_id: Optional[str], language: str = "fr") -> dict:
         payload = {"question": question, "conversation_id": conversation_id, "language": language}
-        return self._post("/chat", payload)
+        return self._post("/chat", payload, timeout=_CHAT_TIMEOUT_SECONDS)
 
     def _get(self, path: str) -> dict:
         try:
@@ -56,9 +57,9 @@ class BackendClient:
             logger.error("GET %s failed: %s", path, exc)
             raise ApiError(message=f"Could not reach the backend ({path}). Is it running?") from exc
 
-    def _post(self, path: str, payload: dict) -> dict:
+    def _post(self, path: str, payload: dict, timeout: int = _TIMEOUT_SECONDS) -> dict:
         try:
-            response = requests.post(self._url(path), json=payload, timeout=_TIMEOUT_SECONDS)
+            response = requests.post(self._url(path), json=payload, timeout=timeout)
             response.raise_for_status()
             return response.json()
         except requests.exceptions.HTTPError as exc:

@@ -1,7 +1,8 @@
 # `src/preprocessing/` — Person 1's workspace
 
 **Goal:** turn raw Moroccan medical sources (PDFs, official web pages) into a
-clean list of `DocumentChunk` objects that Person 2 can embed and index.
+clean list of `DocumentChunk` objects that the Indexation & Moteur RAG
+engine (`src/rag/`) can embed and index.
 
 **Install only:** `pip install -r requirements/person1-data.txt -r requirements/dev.txt`
 — you never need FastAPI, Streamlit, or any RAG library to do your job.

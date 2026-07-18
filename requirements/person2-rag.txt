@@ -1,9 +1,7 @@
-# PERSON 2 only. Needed for embeddings, vector store, and RealRAGService.
+# Indexation & Moteur RAG only. Needed for embeddings, vector store, and RealRAGService.
 # This is exactly the set of heavy libraries that used to be forced on
-# everyone. Now only Person 2's environment (and CI job, if any) installs it.
+# everyone. Now only the Indexation & Moteur RAG environment (and CI job, if any) installs it.
 -r base.txt
 sentence-transformers==3.1.1
 chromadb==0.5.5
-faiss-cpu==1.8.0.post1
-langchain==0.3.1
-langchain-community==0.3.1
+ollama==0.6.2

@@ -1,9 +1,9 @@
 """
-Interface: LLM generation & prompt construction — PERSON 2's contract.
+Interface: LLM generation & prompt construction — Indexation & Moteur RAG's contract.
 
 Abstracts away the specific LLM backend (OpenAI API, Ollama local model,
 HuggingFace...) so `RealRAGService`
-(`src/rag/services/real_rag_service.py`, Person 2's integration point) can call `generate()` without caring
+(`src/rag/services/real_rag_service.py`, the Indexation & Moteur RAG integration point) can call `generate()` without caring
 which provider is behind it.
 """
 from abc import ABC, abstractmethod

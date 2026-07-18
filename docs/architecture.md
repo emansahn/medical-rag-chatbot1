@@ -31,7 +31,7 @@ medical-rag-chatbot/
 ├── requirements/              # Split, per-owner dependency files (see requirements/README.md)
 ├── data/
 │   ├── raw/ processed/ chunks/   # Person 1's output
-│   ├── vector_store/               # Person 2's index
+│   ├── vector_store/               # Indexation & Moteur RAG's index
 │   └── analytics/                    # Generated CSVs for Power BI
 ├── docs/                       # This documentation set
 ├── tests/
@@ -44,10 +44,10 @@ medical-rag-chatbot/
     │   │                              #   + data_provider_interface.py (app-facing contract)
     │   ├── providers/                 # mock_providers.py (default) / real_providers.py (Person 1 fills in)
     │   └── container.py                # DI switch, reads DATA_MODE
-    ├── rag/                        # PERSON 2
+    ├── rag/                        # INDEXATION & MOTEUR RAG
     │   ├── interfaces/               # embedder/vector_store/llm interfaces (internal)
     │   │                              #   + rag_service_interface.py (app-facing contract: RAGService)
-    │   ├── services/                  # mock_rag_service.py (default) / real_rag_service.py (Person 2 fills in)
+    │   ├── services/                  # mock_rag_service.py (default) / real_rag_service.py
     │   └── container.py                # DI switch, reads RAG_MODE
     ├── analytics/                  # PERSON 3 — sample data generator + CSV export for Power BI
     ├── backend/                    # PERSON 3 — FastAPI REST API
@@ -71,7 +71,7 @@ medical-rag-chatbot/
 - **`rag/services/mock_rag_service.py`** — a complete, dependency-free fake
   engine. Not a `NotImplementedError` stub — it returns varied, labeled fake
   answers so the chat UX is genuinely demoable.
-- **`rag/services/real_rag_service.py`** — Person 2's file. Heavy imports are
+- **`rag/services/real_rag_service.py`** — the Indexation & Moteur RAG file. Heavy imports are
   done *lazily inside `__init__`*, so merely having this file in the repo
   never forces anyone to install `person2-rag.txt`.
 - **`rag/container.py`** — the single switch. Reads `RAG_MODE` once, builds
@@ -103,10 +103,10 @@ Streamlit (Chat page)
 - The full app (backend + frontend + tests) runs and passes with
   `RAG_MODE=mock`/`DATA_MODE=mock` and no `faiss`, `langchain`,
   `chromadb`, or `sentence-transformers` installed.
-- Setting `RAG_MODE=real` before Person 2's implementation is finished
-  fails with one clear `NotImplementedError` message, not a crash or silent
-  wrong answer.
-- Person 2 activates the real engine by editing exactly one file
+- Setting `RAG_MODE=real` before the Indexation & Moteur RAG implementation
+  is finished fails with one clear `NotImplementedError` message, not a
+  crash or silent wrong answer.
+- The real engine is activated by editing exactly one file
   (`src/rag/services/real_rag_service.py`) and flipping `RAG_MODE=real` —
   zero changes to `backend/` or `frontend/`.
 - Person 1 activates real data the same way, in

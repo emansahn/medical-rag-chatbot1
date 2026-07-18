@@ -4,7 +4,7 @@ Interface: Document collection & loading — PERSON 1's contract.
 Person 1 implements concrete classes that inherit from `DocumentLoader` for
 each data source (Ministère de la Santé PDFs, OMS Maroc web pages, CHU guides...).
 
-The rest of the application (Person 2's ingestion pipeline, and any future
+The rest of the application (the Indexation & Moteur RAG ingestion pipeline, and any future
 admin tooling) only ever depends on this abstract interface, never on a
 specific loader. This means Person 1 can add/change loaders freely without
 breaking anything downstream.
@@ -70,11 +70,11 @@ class TextChunker(ABC):
 
 @dataclass
 class DocumentChunk:
-    """The final unit that Person 2 will embed and index.
+    """The final unit that the Indexation & Moteur RAG engine embeds and indexes.
 
-    This is the hand-off contract between Person 1 and Person 2: Person 1's
-    pipeline must produce a list of these, Person 2's ingestion code
-    consumes exactly this shape (see `src/rag/interfaces/vector_store_interface.py`).
+    This is the hand-off contract between Person 1 and Indexation & Moteur RAG:
+    Person 1's pipeline must produce a list of these, the Indexation & Moteur RAG
+    ingestion code consumes exactly this shape (see `src/rag/interfaces/vector_store_interface.py`).
     """
 
     chunk_id: str

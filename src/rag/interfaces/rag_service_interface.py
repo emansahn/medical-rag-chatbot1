@@ -1,11 +1,11 @@
 """
-Interface: RAGService — PERSON 2's real contract with the rest of the app.
+Interface: RAGService — Indexation & Moteur RAG's real contract with the rest of the app.
 
 This is the ONLY thing the backend depends on. It has zero knowledge of
 FAISS, ChromaDB, LangChain, or sentence-transformers — those are
 implementation details that live behind this interface, inside whichever
 concrete class is injected (`MockRAGService` today, `RealRAGService` once
-Person 2 finishes).
+the Indexation & Moteur RAG engine is finished).
 
 Because of this, `pip install -r requirements/backend.txt` (no RAG libraries
 at all) is enough to run the full backend against the mock implementation.
@@ -42,7 +42,7 @@ class RAGService(ABC):
 
         Args:
             question: The user's question (already translated to French if
-                Darija support is enabled and Person 2's translator ran).
+                Darija support is enabled and a Darija translator already ran).
             language: Target response language ("fr" or "ary" for Darija).
         """
         raise NotImplementedError

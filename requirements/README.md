@@ -6,7 +6,7 @@
 | `backend.txt` | Person 3 (API work) | FastAPI, Uvicorn + base |
 | `frontend.txt` | Person 3 (UI work) | Streamlit, requests + base |
 | `person1-data.txt` | Person 1 only | pypdf, beautifulsoup4, tiktoken |
-| `person2-rag.txt` | Person 2 only | sentence-transformers, chromadb, faiss-cpu, langchain |
+| `person2-rag.txt` | Indexation & Moteur RAG only | sentence-transformers, chromadb, ollama |
 | `person3-app.txt` | Person 3 (full app) | backend.txt + frontend.txt |
 | `dev.txt` | anyone contributing code | pytest, black, ruff |
 
@@ -16,7 +16,8 @@ Before this split, `pip install -r requirements.txt` forced **everyone** —
 including Person 3, who never touches FAISS or LangChain — to install the
 heaviest, slowest, most failure-prone libraries in the whole project just to
 run the FastAPI server or the Streamlit UI. That's backwards: your work
-should never depend on libraries only Person 2's code imports.
+should never depend on libraries only the Indexation & Moteur RAG module
+imports.
 
 ## Typical installs
 
@@ -27,7 +28,7 @@ pip install -r requirements/person3-app.txt -r requirements/dev.txt
 # Person 1:
 pip install -r requirements/person1-data.txt -r requirements/dev.txt
 
-# Person 2:
+# Indexation & Moteur RAG:
 pip install -r requirements/person2-rag.txt -r requirements/backend.txt -r requirements/dev.txt
 
 # CI / "install everything" (rarely needed):

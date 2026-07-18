@@ -8,8 +8,8 @@ Why this exists:
     call `get_logger(__name__)` instead of using `print()`.
 
 Who owns this:
-    Person 3. Person 1 and Person 2 simply import `get_logger` in their
-    modules — no need to touch this file.
+    Person 3. Person 1 and the Indexation & Moteur RAG module simply import
+    `get_logger` in their modules — no need to touch this file.
 """
 import logging
 import sys

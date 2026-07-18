@@ -15,7 +15,12 @@ def main() -> None:
     apply_theme("Paramètres", "⚙️")
     render_sidebar()
 
-    st.markdown('<div class="mc-app-title" style="font-size:1.8rem;">⚙️ Paramètres</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="mc-page-header"><div class="mc-eyebrow">Préférences</div>'
+        '<h1 class="mc-page-title">Paramètres</h1>'
+        '<div class="mc-page-lead">Adaptez la langue et le fonctionnement de votre assistant.</div></div>',
+        unsafe_allow_html=True,
+    )
 
     st.markdown("### Préférences de réponse")
     st.session_state.language = st.radio(
@@ -27,7 +32,7 @@ def main() -> None:
     )
 
     st.markdown("### Modèle de langage (LLM)")
-    st.info("🔧 Le choix du modèle sera activé une fois le moteur RAG de la Personne 2 branché.")
+    st.info("Le choix du modèle sera disponible après l’activation du moteur RAG.")
     st.selectbox(
         "Modèle",
         options=["stub (démo)", "gpt-4o-mini", "llama-3 (Ollama, local)"],
@@ -44,7 +49,7 @@ def main() -> None:
         st.error(f"Impossible de charger la configuration : {exc.message}")
 
     st.divider()
-    if st.button("🗑️ Réinitialiser toute la session"):
+    if st.button("Réinitialiser la session"):
         for key in ["messages", "conversation_id", "history_search"]:
             st.session_state.pop(key, None)
         st.success("Session réinitialisée.")

@@ -32,49 +32,45 @@ def main() -> None:
     _init_session_state()
     render_sidebar()
 
-    st.markdown('<div class="mc-app-title" style="font-size:2.2rem;">🩺 Medical RAG Chatbot</div>', unsafe_allow_html=True)
-    st.subheader("Chatbot médical intelligent basé sur RAG, adapté au contexte marocain")
-
-    st.write(
-        "Cette application répond à des questions médicales générales en s'appuyant "
-        "**uniquement sur des sources médicales marocaines officielles** "
-        "(Ministère de la Santé, OMS Maroc, CHU, guides cliniques), afin de limiter "
-        "les hallucinations et de fournir des réponses fiables et contextualisées."
+    st.markdown(
+        '<div class="mc-page-header"><div class="mc-eyebrow">Assistant médical intelligent</div>'
+        '<h1 class="mc-page-title">Une information médicale fiable, simplement.</h1>'
+        '<div class="mc-page-lead">Posez vos questions de santé et obtenez des réponses '
+        'contextualisées à partir de sources médicales marocaines officielles.</div></div>',
+        unsafe_allow_html=True,
     )
 
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.markdown("#### 💬 Chat")
-        st.write("Posez une question médicale et obtenez une réponse sourcée.")
-        st.page_link("pages/1_Chat.py", label="Ouvrir le chat →", icon="💬")
+        st.markdown('<div class="mc-card"><div class="mc-card-icon">01</div><div class="mc-card-title">Poser une question</div><div class="mc-card-copy">Échangez avec l’assistant et consultez les sources utilisées.</div></div>', unsafe_allow_html=True)
+        st.page_link("pages/1_Chat.py", label="Ouvrir le chat")
     with col2:
-        st.markdown("#### ⚙️ Paramètres")
-        st.write("Langue de réponse, préférences d'affichage.")
-        st.page_link("pages/3_Settings.py", label="Ouvrir les paramètres →", icon="⚙️")
+        st.markdown('<div class="mc-card"><div class="mc-card-icon">02</div><div class="mc-card-title">Personnaliser</div><div class="mc-card-copy">Choisissez votre langue et adaptez les préférences de réponse.</div></div>', unsafe_allow_html=True)
+        st.page_link("pages/3_Settings.py", label="Voir les paramètres")
     with col3:
-        st.markdown("#### ℹ️ À propos")
-        st.write("Équipe, architecture, avancement du projet.")
-        st.page_link("pages/2_About.py", label="En savoir plus →", icon="ℹ️")
+        st.markdown('<div class="mc-card"><div class="mc-card-icon">03</div><div class="mc-card-title">Comprendre le projet</div><div class="mc-card-copy">Découvrez les sources, l’architecture RAG et l’équipe.</div></div>', unsafe_allow_html=True)
+        st.page_link("pages/2_About.py", label="En savoir plus")
 
     st.divider()
-    st.markdown("### État du système")
+    st.markdown("### Disponibilité du service")
     client = get_backend_client()
     try:
         status = client.status()
         health = client.health()
         c1, c2, c3 = st.columns(3)
-        c1.metric("API Backend", "En ligne ✅" if health.get("status") == "ok" else "Erreur")
+        c1.metric("API", "En ligne" if health.get("status") == "ok" else "Indisponible")
         c2.metric("Moteur RAG", "Actif" if status.get("rag_engine_ready") else "Mode démo")
-        c3.metric("Support Darija", "Activé" if status.get("darija_support_enabled") else "Désactivé")
+        c3.metric("Darija", "Disponible" if status.get("darija_support_enabled") else "Non disponible")
     except ApiError as exc:
         st.error(f"Impossible de contacter le backend : {exc.message}")
         st.info("Démarrez l'API avec : `uvicorn src.backend.main:app --reload --port 8000`")
 
     st.divider()
-    st.caption(
-        "⚠️ Avertissement médical : cette application est un projet académique et ne "
-        "remplace en aucun cas un diagnostic ou un avis médical professionnel. En cas "
-        "d'urgence, contactez immédiatement les services de santé."
+    st.markdown(
+        '<div class="mc-callout"><strong>Information importante</strong><br>'
+        'Cette application fournit des informations générales et ne remplace ni un diagnostic '
+        'ni un avis médical professionnel. En cas d’urgence, contactez les services de santé.</div>',
+        unsafe_allow_html=True,
     )
 
 

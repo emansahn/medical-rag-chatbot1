@@ -6,7 +6,7 @@ Controlled by `RAG_MODE` in `.env`:
     RAG_MODE=mock   (default) -> MockRAGService, zero heavy dependencies.
     RAG_MODE=real              -> RealRAGService, requires
                                    requirements/person2-rag.txt and a
-                                   finished implementation from Person 2.
+                                   finished Indexation & Moteur RAG implementation.
 
 Nothing outside this file ever chooses between Mock/Real directly — routers
 and services only ever see the `RAGService` interface (dependency inversion).
@@ -22,7 +22,7 @@ _service_instance: "RAGService | None" = None
 
 def _build_service() -> RAGService:
     if settings.rag_mode == "real":
-        logger.info("RAG_MODE=real — instantiating RealRAGService (Person 2's engine).")
+        logger.info("RAG_MODE=real — instantiating RealRAGService (Indexation & Moteur RAG engine).")
         from src.rag.services.real_rag_service import RealRAGService  # local import: only pulled in when needed
 
         return RealRAGService()
