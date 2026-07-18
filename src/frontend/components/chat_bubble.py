@@ -14,14 +14,15 @@ def render_message(role: str, content: str, sources: list[dict] | None = None, m
     is_user = role == "user"
     label = "Vous" if is_user else "Assistant médical"
 
-    st.markdown(f'<div class="mc-role-label">{label}</div>', unsafe_allow_html=True)
     st.markdown(
-        f'<div class="mc-bubble-row {role}"><div class="mc-bubble {role}">{content}</div></div>',
+        f'<div class="mc-bubble-row {role}"><div class="mc-message">'
+        f'<div class="mc-role-label">{label}</div>'
+        f'<div class="mc-bubble {role}">{content}</div></div></div>',
         unsafe_allow_html=True,
     )
 
     if sources:
-        with st.expander(f"📚 Sources ({len(sources)})", expanded=False):
+        with st.expander(f"Sources consultées ({len(sources)})", expanded=False):
             for src in sources:
                 st.markdown(
                     f'<span class="mc-source-chip">{src["title"]}</span>',
@@ -29,10 +30,7 @@ def render_message(role: str, content: str, sources: list[dict] | None = None, m
                 )
                 st.caption(src.get("excerpt", ""))
                 if src.get("url"):
-                    st.markdown(f"[🔗 Voir la source]({src['url']})")
-
-    if not is_user:
-        st.code(content, language=None)  # provides Streamlit's built-in copy-to-clipboard icon
+                    st.markdown(f"[Voir la source]({src['url']})")
 
 
 def render_typing_indicator() -> None:

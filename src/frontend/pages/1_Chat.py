@@ -31,18 +31,27 @@ def main() -> None:
     _init_session_state()
     render_sidebar()
 
-    st.markdown('<div class="mc-app-title" style="font-size:1.8rem;">💬 Chat médical</div>', unsafe_allow_html=True)
-    st.caption("Répond uniquement à partir de sources médicales marocaines officielles indexées.")
+    st.markdown(
+        '<div class="mc-page-header"><div class="mc-eyebrow">Conversation</div>'
+        '<h1 class="mc-page-title">Comment puis-je vous aider ?</h1>'
+        '<div class="mc-page-lead">Les réponses s’appuient sur les sources médicales '
+        'marocaines officielles disponibles dans la base documentaire.</div></div>',
+        unsafe_allow_html=True,
+    )
 
     chat_container = st.container()
     with chat_container:
         messages = _filtered_messages()
         if not messages:
-            st.info("👋 Posez votre première question médicale ci-dessous pour commencer.")
+            st.markdown(
+                '<div class="mc-chat-intro"><strong>Commencez une conversation</strong>'
+                '<span>Décrivez votre question clairement, sans partager de données personnelles sensibles.</span></div>',
+                unsafe_allow_html=True,
+            )
         for i, msg in enumerate(messages):
             render_message(msg["role"], msg["content"], msg.get("sources"), msg_index=i)
 
-    question = st.chat_input("Écrivez votre question médicale ici...")
+    question = st.chat_input("Écrivez votre question médicale…")
 
     if question:
         st.session_state.messages.append({"role": "user", "content": question, "sources": []})
