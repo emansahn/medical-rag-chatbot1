@@ -1,5 +1,5 @@
 """
-RealRAGService — PERSON 2's implementation.
+RealRAGService — production RAG engine implementation.
 
 Wires SentenceTransformerEmbedder + ChromaVectorStore + SimpleRetriever +
 MedicalPromptBuilder + an `LLMClient` behind the `RAGService` interface.

@@ -1,5 +1,5 @@
 """
-OllamaLLMClient — Person 2's `LLMClient` implementation for a local LLM.
+OllamaLLMClient — an `LLMClient` implementation for a local LLM.
 
 Talks to a local Ollama server (https://ollama.com) — no API key, no
 external network call once the model is pulled (`ollama pull llama3.2`).
