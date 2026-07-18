@@ -48,9 +48,10 @@ class Settings(BaseSettings):
     data_mode: str = "mock"      # mock | real
 
     # --- RAG engine (Person 2's domain) ---
-    llm_provider: str = "stub"
-    llm_model_name: str = "gpt-4o-mini"
+    llm_provider: str = "ollama"     # ollama (local, default) | openai
+    llm_model_name: str = "llama3.1:8b"
     llm_api_key: str = ""
+    llm_base_url: str = "http://localhost:11434"
     embedding_model_name: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     vector_store_provider: str = "chroma"
     vector_store_path: str = "./data/vector_store"
