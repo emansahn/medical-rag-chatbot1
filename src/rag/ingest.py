@@ -1,5 +1,5 @@
 """
-src/rag/ingest.py — Person 2's ingestion script.
+src/rag/ingest.py — Indexation & Moteur RAG's ingestion script.
 
 Reads chunks via `get_chunk_provider()` (so it runs against Person 1's mock
 data before their real pipeline lands, and against real data once it does),

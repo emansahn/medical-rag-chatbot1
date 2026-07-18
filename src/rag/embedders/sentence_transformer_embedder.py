@@ -1,5 +1,5 @@
 """
-SentenceTransformerEmbedder — Person 2's `Embedder` implementation.
+SentenceTransformerEmbedder — Indexation & Moteur RAG's `Embedder` implementation.
 
 Uses a multilingual sentence-transformers model so French and Darija (once
 transliterated) queries embed into the same space as the French source

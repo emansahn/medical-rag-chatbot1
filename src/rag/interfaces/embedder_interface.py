@@ -1,5 +1,5 @@
 """
-Interface: Embeddings — PERSON 2's contract.
+Interface: Embeddings — Indexation & Moteur RAG's contract.
 
 Any embedding backend (SentenceTransformers, OpenAI embeddings, HuggingFace
 Inference API...) must implement this interface. The rest of the RAG

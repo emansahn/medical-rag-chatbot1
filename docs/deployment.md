@@ -4,8 +4,9 @@
 
 ## Option B — Docker Compose
 
-`Dockerfile.backend` (installs backend deps + whichever of person1/person2's
-files match your `.env` mode — mock mode needs neither):
+`Dockerfile.backend` (installs backend deps + whichever of
+`person1-data.txt`/`person2-rag.txt` match your `.env` mode — mock mode
+needs neither):
 
 ```dockerfile
 FROM python:3.12-slim

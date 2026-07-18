@@ -1,5 +1,5 @@
 """
-OpenAILLMClient — Person 2's `LLMClient` implementation.
+OpenAILLMClient — Indexation & Moteur RAG's `LLMClient` implementation.
 
 `openai` is imported lazily inside `__init__`, matching the rest of this
 module: the file can exist in the repo without forcing the dependency on

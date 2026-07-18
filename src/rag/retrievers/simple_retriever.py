@@ -1,5 +1,5 @@
 """
-SimpleRetriever — Person 2's `Retriever` implementation.
+SimpleRetriever — Indexation & Moteur RAG's `Retriever` implementation.
 
 Combines an `Embedder` and a `VectorStore` with no query rewriting or
 re-ranking: embed the query, search the store. Kept as its own class (rather

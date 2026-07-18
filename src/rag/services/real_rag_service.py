@@ -1,5 +1,5 @@
 """
-RealRAGService — production RAG engine implementation.
+RealRAGService — Indexation & Moteur RAG's production engine implementation.
 
 Wires SentenceTransformerEmbedder + ChromaVectorStore + SimpleRetriever +
 MedicalPromptBuilder + an `LLMClient` behind the `RAGService` interface.

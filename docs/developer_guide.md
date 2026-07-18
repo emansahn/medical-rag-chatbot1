@@ -41,7 +41,7 @@ interface type and the container's `get_*()` function.
 4. Test locally with `DATA_MODE=real` in `.env`.
 5. Do not touch `src/backend/`, `src/frontend/`, `src/rag/`.
 
-## How Person 2 integrates
+## How Indexation & Moteur RAG integrates
 
 1. Implement `Embedder`, `VectorStore`, `Retriever`, `PromptBuilder`,
    `LLMClient` (`src/rag/interfaces/`) in new files under

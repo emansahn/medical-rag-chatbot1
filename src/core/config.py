@@ -11,7 +11,7 @@ Why this exists:
     misconfigured.
 
 Who owns this:
-    Person 3 (infra/config). Person 1 and Person 2 should ADD new fields here
+    Person 3 (infra/config). Person 1 and the Indexation & Moteur RAG module should ADD new fields here
     (e.g. `CHUNK_SIZE`, `LLM_TEMPERATURE`) rather than hardcoding constants in
     their own modules, so every teammate can see the full configuration surface.
 """
@@ -42,12 +42,12 @@ class Settings(BaseSettings):
     backend_api_url: str = "http://localhost:8000/api/v1"
 
     # --- Mode switches (dependency injection control) ---
-    # "mock" requires no heavy libraries; "real" requires the person1/person2
-    # implementations + their requirements files to be installed.
+    # "mock" requires no heavy libraries; "real" requires the data-collection
+    # and Indexation & Moteur RAG implementations + their requirements files to be installed.
     rag_mode: str = "mock"       # mock | real
     data_mode: str = "mock"      # mock | real
 
-    # --- RAG engine (Person 2's domain) ---
+    # --- RAG engine (Indexation & Moteur RAG) ---
     llm_provider: str = "ollama"     # ollama (local, default) | openai
     llm_model_name: str = "llama3.1:8b"
     llm_api_key: str = ""

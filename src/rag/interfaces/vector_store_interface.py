@@ -1,5 +1,5 @@
 """
-Interface: Vector store & retrieval — PERSON 2's contract.
+Interface: Vector store & retrieval — Indexation & Moteur RAG's contract.
 
 Wraps FAISS / ChromaDB / any other vector DB behind one interface so the
 rest of the app never imports a vector-DB SDK directly.

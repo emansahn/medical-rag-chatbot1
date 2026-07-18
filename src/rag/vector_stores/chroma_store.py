@@ -1,5 +1,5 @@
 """
-ChromaVectorStore — Person 2's `VectorStore` implementation.
+ChromaVectorStore — Indexation & Moteur RAG's `VectorStore` implementation.
 
 Wraps a persistent ChromaDB collection. `chromadb` is imported lazily inside
 `__init__` so this file can exist in the repo without forcing the dependency

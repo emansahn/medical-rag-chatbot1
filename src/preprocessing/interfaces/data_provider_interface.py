@@ -35,7 +35,7 @@ class DocumentProvider(ABC):
 
 
 class ChunkProvider(ABC):
-    """Provides the current set of retrieval-ready chunks (Person 2 consumes this)."""
+    """Provides the current set of retrieval-ready chunks (the Indexation & Moteur RAG engine consumes this)."""
 
     @abstractmethod
     def list_chunks(self) -> List[DocumentChunk]:

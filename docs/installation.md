@@ -59,4 +59,4 @@ pytest tests/ -v
 | `ModuleNotFoundError: No module named 'src'` when running `streamlit run` | Already handled: every entry point (`app.py`, `pages/*.py`) adds the project root to `sys.path` itself at the top of the file, so no `PYTHONPATH` is needed. If you still hit this, the project folder was likely renamed/moved in a way that changed its depth (e.g. extracted twice into a nested `(1)` folder on Windows) — run from the actual `medical-rag-chatbot` folder that directly contains `src/`, `requirements/`, etc. |
 | `ModuleNotFoundError: No module named 'src'` when running the backend | Run `uvicorn` from the project root, not from inside `src/` |
 | Frontend shows "Backend hors-ligne" | Make sure `uvicorn` is running on the port set by `API_PORT` in `.env` |
-| `pip install` fails on `faiss-cpu` | Not required to run the demo (mock mode); only needed once Person 2 wires FAISS in via `requirements/person2-rag.txt` |
+| `pip install` fails on a RAG dependency (`sentence-transformers`, `chromadb`) | Not required to run the demo (mock mode); only needed for `RAG_MODE=real` via `requirements/person2-rag.txt` |

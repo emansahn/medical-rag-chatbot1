@@ -5,8 +5,8 @@
 | Folder | Owner | Others should... |
 |---|---|---|
 | `src/preprocessing/providers/`, `src/preprocessing/loaders/` `cleaning/` `chunking/` (to create) | **Person 1** | never import from directly — depend on `DocumentProvider`/`ChunkProvider` interfaces |
-| `src/rag/services/`, `src/rag/embedders/` `vector_stores/` `retrievers/` `prompting/` `llm/` (to create) | **Person 2** | never import from directly — depend on `RAGService` interface |
-| `src/backend/`, `src/frontend/`, `src/analytics/`, `src/core/` | **Person 3** | Person 1/2 should not need to touch these at all |
+| `src/rag/services/`, `src/rag/embedders/` `vector_stores/` `retrievers/` `prompting/` `llm/` (to create) | **Indexation & Moteur RAG** | never import from directly — depend on `RAGService` interface |
+| `src/backend/`, `src/frontend/`, `src/analytics/`, `src/core/` | **Person 3** | Person 1 and Indexation & Moteur RAG should not need to touch these at all |
 | `src/preprocessing/interfaces/`, `src/rag/interfaces/`, `*/container.py` | **Shared contract** — changes here need agreement from whoever depends on them | propose changes via PR, tag the affected owner as reviewer |
 | `docs/`, `requirements/` | **Person 3** maintains, anyone can propose edits | |
 
@@ -40,7 +40,7 @@ main                    ← always demoable, protected, mock mode passes CI
 
 ## Integration process
 
-### Person 1 → Person 2/3
+### Person 1 → Indexation & Moteur RAG / Person 3
 1. Implement `DocumentLoader`/`TextCleaner`/`TextChunker`
    (`src/preprocessing/interfaces/document_loader_interface.py`).
 2. Write `src/preprocessing/pipeline.py` to run them and populate `data/chunks/`.
@@ -50,7 +50,7 @@ main                    ← always demoable, protected, mock mode passes CI
 4. Set `DATA_MODE=real` in `.env` locally to verify, then open a PR.
 5. **Nothing in `src/backend/` or `src/frontend/` should be touched.**
 
-### Person 2 → Person 3
+### Indexation & Moteur RAG → Person 3
 1. Implement `Embedder`, `VectorStore`/`Retriever`, `PromptBuilder`, `LLMClient`
    (`src/rag/interfaces/`).
 2. Write `src/rag/ingest.py` to embed Person 1's chunks into your vector store.
@@ -60,9 +60,10 @@ main                    ← always demoable, protected, mock mode passes CI
 5. **Nothing in `src/backend/` or `src/frontend/` should be touched.**
 
 ### Merge order recommendation
-Person 1 and Person 2 can merge in **any order**, independently, since
-Person 2's `real_providers.py` reads from `data/chunks/` regardless of when
-Person 1's PR lands. Person 3's work never blocks on either.
+Person 1 and Indexation & Moteur RAG can merge in **any order**,
+independently, since the RAG ingestion script reads from `data/chunks/`
+regardless of when Person 1's PR lands. Person 3's work never blocks on
+either.
 
 ## Testing process
 
@@ -71,9 +72,10 @@ pip install -r requirements/dev.txt -r requirements/person3-app.txt
 pytest tests/ -v
 ```
 
-- **Unit tests** (`tests/unit/`) — no server, no network. Person 1/2 add
-  tests here for their own loaders/embedders/retrievers as they build them
-  (e.g. `tests/unit/preprocessing/`, `tests/unit/rag/`).
+- **Unit tests** (`tests/unit/`) — no server, no network. Person 1 and
+  Indexation & Moteur RAG add tests here for their own
+  loaders/embedders/retrievers as they build them (e.g.
+  `tests/unit/preprocessing/`, `tests/unit/rag/`).
 - **Integration tests** (`tests/integration/`) — hit the FastAPI app via
   `TestClient`, always run against whatever `RAG_MODE`/`DATA_MODE` is
   active. CI runs these in `mock` mode (fast, no external services).

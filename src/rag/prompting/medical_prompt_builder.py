@@ -1,5 +1,5 @@
 """
-MedicalPromptBuilder — Person 2's `PromptBuilder` implementation.
+MedicalPromptBuilder — Indexation & Moteur RAG's `PromptBuilder` implementation.
 
 Enforces the project's core anti-hallucination rule directly in the
 returned prompt string (not only via a separate system prompt), so the
