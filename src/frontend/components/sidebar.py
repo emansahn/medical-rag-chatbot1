@@ -1,6 +1,7 @@
 """Shared sidebar: branding, engine status, conversation controls, navigation."""
 import streamlit as st
 
+from src.frontend.components.icons import icon
 from src.frontend.services.api_client import ApiError, get_backend_client
 
 
@@ -16,7 +17,7 @@ def render_sidebar() -> None:
 
     with st.sidebar:
         st.markdown(
-            '<div class="mc-brand"><div class="mc-brand-mark">+</div>'
+            f'<div class="mc-brand"><div class="mc-brand-mark">{icon("activity", 20)}</div>'
             '<div><div class="mc-brand-name">Medical RAG</div>'
             '<div class="mc-brand-subtitle">Assistant médical marocain</div></div></div>',
             unsafe_allow_html=True,
@@ -26,7 +27,10 @@ def render_sidebar() -> None:
         _render_engine_status(client)
         st.divider()
 
-        st.markdown('<div class="mc-section-label">Conversation</div>', unsafe_allow_html=True)
+        st.markdown(
+            f'<div class="mc-section-label">{icon("message-square", 14)}Conversation</div>',
+            unsafe_allow_html=True,
+        )
         col1, col2 = st.columns(2)
         with col1:
             if st.button("Effacer", use_container_width=True):
@@ -43,7 +47,10 @@ def render_sidebar() -> None:
             st.session_state.history_search = ""
 
         st.divider()
-        st.markdown('<div class="mc-section-label">Langue de réponse</div>', unsafe_allow_html=True)
+        st.markdown(
+            f'<div class="mc-section-label">{icon("globe", 14)}Langue de réponse</div>',
+            unsafe_allow_html=True,
+        )
         st.session_state.language = st.selectbox(
             "Langue",
             options=list(LANGUAGE_LABELS),
@@ -57,7 +64,10 @@ def render_sidebar() -> None:
         )
 
         st.divider()
-        st.markdown('<div class="mc-section-label">Modèle</div>', unsafe_allow_html=True)
+        st.markdown(
+            f'<div class="mc-section-label">{icon("settings", 14)}Modèle</div>',
+            unsafe_allow_html=True,
+        )
         st.selectbox(
             "Modèle LLM",
             options=["stub (démo)", "gpt-4o-mini (bientôt)", "llama-3-ollama (bientôt)"],
@@ -66,7 +76,12 @@ def render_sidebar() -> None:
         )
 
         st.divider()
-        st.caption("Information générale uniquement. Ne remplace pas un avis médical professionnel.")
+        st.markdown(
+            f'<div class="mc-callout" style="font-size:12px;padding:var(--mc-sp-3);">'
+            f'{icon("shield", 14)}<span>Information générale uniquement. '
+            "Ne remplace pas un avis médical professionnel.</span></div>",
+            unsafe_allow_html=True,
+        )
 
 
 def _render_engine_status(client) -> None:
@@ -74,11 +89,10 @@ def _render_engine_status(client) -> None:
         status = client.status()
         ready = status.get("rag_engine_ready", False)
         badge_class = "ok" if ready else "warn"
-        badge_text = "Moteur RAG actif" if ready else "Mode démo (mock)"
+        badge_text = "Moteur RAG actif" if ready else "Moteur RAG indisponible"
         st.markdown(f'<span class="mc-badge {badge_class}">{badge_text}</span>', unsafe_allow_html=True)
         st.caption(
-            f"RAG: {status.get('rag_mode')} · Data: {status.get('data_mode')} · "
-            f"Chunks: {status.get('chunks_indexed')}"
+            f"Corpus réel · Chunks: {status.get('chunks_indexed')}"
         )
     except ApiError:
         st.markdown('<span class="mc-badge error">Backend hors-ligne</span>', unsafe_allow_html=True)

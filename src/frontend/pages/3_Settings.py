@@ -6,17 +6,20 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
 import streamlit as st
 
+from src.frontend.components.icons import icon
 from src.frontend.components.sidebar import LANGUAGE_LABELS, render_sidebar
 from src.frontend.components.theme import apply_theme
+from src.frontend.components.top_nav import render_top_nav
 from src.frontend.services.api_client import ApiError, get_backend_client
 
 
 def main() -> None:
     apply_theme("Paramètres", "⚙️")
+    render_top_nav("parametres")
     render_sidebar()
 
     st.markdown(
-        '<div class="mc-page-header"><div class="mc-eyebrow">Préférences</div>'
+        f'<div class="mc-page-header"><div class="mc-eyebrow">{icon("settings", 14)}Préférences</div>'
         '<h1 class="mc-page-title">Paramètres</h1>'
         '<div class="mc-page-lead">Adaptez la langue et le fonctionnement de votre assistant.</div></div>',
         unsafe_allow_html=True,

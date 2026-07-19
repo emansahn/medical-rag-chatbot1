@@ -1,6 +1,8 @@
 """Renders chat messages as styled bubbles with markdown, sources, and a copy button."""
 import streamlit as st
 
+from src.frontend.components.icons import icon
+
 
 def render_message(
     role: str,
@@ -20,10 +22,11 @@ def render_message(
     is_user = role == "user"
     label = "Vous" if is_user else "Assistant médical"
     script_class = " darija-arabic" if language == "ary-arab" else ""
+    avatar_icon = icon("user", 15) if is_user else icon("activity", 15)
 
     st.markdown(
-        f'<div class="mc-bubble-row {role}"><div class="mc-message">'
-        f'<div class="mc-role-label">{label}</div>'
+        f'<div class="mc-bubble-row {role}"><div class="mc-avatar">{avatar_icon}</div>'
+        f'<div class="mc-message"><div class="mc-role-label">{label}</div>'
         f'<div class="mc-bubble {role}{script_class}">{content}</div></div></div>',
         unsafe_allow_html=True,
     )
@@ -32,12 +35,16 @@ def render_message(
         with st.expander(f"Sources consultées ({len(sources)})", expanded=False):
             for src in sources:
                 st.markdown(
-                    f'<span class="mc-source-chip">{src["title"]}</span>',
+                    f'<span class="mc-source-chip">{icon("file-text", 12)}{src["title"]}</span>',
                     unsafe_allow_html=True,
                 )
                 st.caption(src.get("excerpt", ""))
                 if src.get("url"):
-                    st.markdown(f"[Voir la source]({src['url']})")
+                    st.markdown(
+                        f'<span class="mc-source-link">{icon("external-link", 13)}</span> '
+                        f"[Voir la source]({src['url']})",
+                        unsafe_allow_html=True,
+                    )
 
 
 def render_typing_indicator() -> None:

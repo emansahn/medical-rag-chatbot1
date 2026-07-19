@@ -7,8 +7,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 import streamlit as st
 
 from src.frontend.components.chat_bubble import render_message, render_typing_indicator
+from src.frontend.components.icons import icon
 from src.frontend.components.sidebar import render_sidebar
 from src.frontend.components.theme import apply_theme
+from src.frontend.components.top_nav import render_top_nav
 from src.frontend.services.api_client import ApiError, get_backend_client
 
 
@@ -29,10 +31,11 @@ def _filtered_messages() -> list[dict]:
 def main() -> None:
     apply_theme("Chat", "💬")
     _init_session_state()
+    render_top_nav("chat")
     render_sidebar()
 
     st.markdown(
-        '<div class="mc-page-header"><div class="mc-eyebrow">Conversation</div>'
+        f'<div class="mc-page-header"><div class="mc-eyebrow">{icon("message-square", 14)}Conversation</div>'
         '<h1 class="mc-page-title">Comment puis-je vous aider ?</h1>'
         '<div class="mc-page-lead">Les réponses s’appuient sur les sources médicales '
         'marocaines officielles disponibles dans la base documentaire.</div></div>',
@@ -44,8 +47,10 @@ def main() -> None:
         messages = _filtered_messages()
         if not messages:
             st.markdown(
-                '<div class="mc-chat-intro"><strong>Commencez une conversation</strong>'
-                '<span>Décrivez votre question clairement, sans partager de données personnelles sensibles.</span></div>',
+                f'<div class="mc-chat-intro">{icon("send", 18)}<div>'
+                "<strong>Commencez une conversation</strong>"
+                "<span>Décrivez votre question clairement, sans partager de données personnelles sensibles.</span>"
+                "</div></div>",
                 unsafe_allow_html=True,
             )
         for i, msg in enumerate(messages):
@@ -81,9 +86,6 @@ def main() -> None:
                 st.session_state.conversation_id = response["conversation_id"]
                 answer = response["answer"]
                 sources = response.get("sources", [])
-
-                if response.get("is_stub"):
-                    st.toast("Mode démo : le moteur RAG réel n'est pas encore branché.", icon="⚠️")
 
                 placeholder.empty()
                 render_message(

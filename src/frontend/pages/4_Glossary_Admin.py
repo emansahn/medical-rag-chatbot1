@@ -7,7 +7,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
 import streamlit as st
 
+from src.frontend.components.icons import icon
 from src.frontend.components.theme import apply_theme
+from src.frontend.components.top_nav import render_top_nav
 from src.frontend.services.api_client import ApiError, get_backend_client
 
 
@@ -18,10 +20,20 @@ STATUSES = {
     "approved": "Approuvé",
     "rejected": "Rejeté",
 }
+STATUS_BADGE_CLASS = {
+    "draft": "neutral",
+    "linguistic_review": "info",
+    "medical_review": "warn",
+    "approved": "ok",
+    "rejected": "error",
+}
 
 
 def _login(client) -> None:
-    st.markdown("### Connexion administrateur")
+    st.markdown(
+        f'<h3 style="display:flex;align-items:center;gap:8px;">{icon("lock", 18)}Connexion administrateur</h3>',
+        unsafe_allow_html=True,
+    )
     st.info(
         "Le premier compte est créé au démarrage du backend avec "
         "`ADMIN_BOOTSTRAP_USERNAME` et `ADMIN_BOOTSTRAP_PASSWORD`."
@@ -110,6 +122,11 @@ def _render_management(client, token: str) -> None:
                 ),
             )
             selected = next(term for term in terms if term["id"] == selected_id)
+            badge_class = STATUS_BADGE_CLASS.get(selected["status"], "neutral")
+            st.markdown(
+                f'<span class="mc-badge {badge_class}">{STATUSES[selected["status"]]}</span>',
+                unsafe_allow_html=True,
+            )
             with st.form(f"edit-{selected_id}"):
                 payload = _term_payload(f"edit-{selected_id}", selected)
                 save = st.form_submit_button("Enregistrer les modifications", type="primary")
@@ -155,8 +172,9 @@ def _render_management(client, token: str) -> None:
 
 def main() -> None:
     apply_theme("Administration du glossaire", "🔐")
+    render_top_nav("glossaire")
     st.markdown(
-        '<div class="mc-page-header"><div class="mc-eyebrow">Administration sécurisée</div>'
+        f'<div class="mc-page-header"><div class="mc-eyebrow">{icon("shield", 14)}Administration sécurisée</div>'
         '<h1 class="mc-page-title">Glossaire médical Darija</h1>'
         '<div class="mc-page-lead">Proposez, révisez et approuvez la terminologie utilisée par le RAG.</div></div>',
         unsafe_allow_html=True,
