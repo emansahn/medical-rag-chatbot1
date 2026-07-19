@@ -1,8 +1,10 @@
 """Request/response schemas for the /chat endpoints."""
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator
+
+ResponseLanguage = Literal["fr", "ary", "ary-arab", "ary-latn"]
 
 
 class ChatRequest(BaseModel):
@@ -10,7 +12,10 @@ class ChatRequest(BaseModel):
 
     question: str = Field(..., min_length=1, max_length=2000, description="User's medical question.")
     conversation_id: Optional[str] = Field(None, description="Existing conversation to append to.")
-    language: str = Field("fr", description="Response language: 'fr' or 'ary' (Darija).")
+    language: ResponseLanguage = Field(
+        "fr",
+        description="Response language: French, Darija Arabic script, or Darija Latin script.",
+    )
 
     @field_validator("question")
     @classmethod

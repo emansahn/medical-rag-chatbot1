@@ -2,7 +2,13 @@
 import streamlit as st
 
 
-def render_message(role: str, content: str, sources: list[dict] | None = None, msg_index: int = 0) -> None:
+def render_message(
+    role: str,
+    content: str,
+    sources: list[dict] | None = None,
+    msg_index: int = 0,
+    language: str = "fr",
+) -> None:
     """Render a single chat message bubble.
 
     Args:
@@ -13,11 +19,12 @@ def render_message(role: str, content: str, sources: list[dict] | None = None, m
     """
     is_user = role == "user"
     label = "Vous" if is_user else "Assistant médical"
+    script_class = " darija-arabic" if language == "ary-arab" else ""
 
     st.markdown(
         f'<div class="mc-bubble-row {role}"><div class="mc-message">'
         f'<div class="mc-role-label">{label}</div>'
-        f'<div class="mc-bubble {role}">{content}</div></div></div>',
+        f'<div class="mc-bubble {role}{script_class}">{content}</div></div></div>',
         unsafe_allow_html=True,
     )
 

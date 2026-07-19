@@ -32,7 +32,13 @@ class PromptBuilder(ABC):
     """
 
     @abstractmethod
-    def build(self, question: str, context_chunks: List[RetrievedChunk], language: str = "fr") -> str:
+    def build(
+        self,
+        question: str,
+        context_chunks: List[RetrievedChunk],
+        language: str = "fr",
+        retrieval_question: Optional[str] = None,
+    ) -> str:
         raise NotImplementedError
 
 

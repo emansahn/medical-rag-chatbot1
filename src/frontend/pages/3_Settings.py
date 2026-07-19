@@ -6,7 +6,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
 
 import streamlit as st
 
-from src.frontend.components.sidebar import render_sidebar
+from src.frontend.components.sidebar import LANGUAGE_LABELS, render_sidebar
 from src.frontend.components.theme import apply_theme
 from src.frontend.services.api_client import ApiError, get_backend_client
 
@@ -25,10 +25,13 @@ def main() -> None:
     st.markdown("### Préférences de réponse")
     st.session_state.language = st.radio(
         "Langue de réponse",
-        options=["fr", "ary"],
-        format_func=lambda x: "Français" if x == "fr" else "Darija marocaine (bonus)",
-        index=0 if st.session_state.get("language", "fr") == "fr" else 1,
-        horizontal=True,
+        options=list(LANGUAGE_LABELS),
+        format_func=lambda code: LANGUAGE_LABELS[code],
+        index=list(LANGUAGE_LABELS).index(
+            st.session_state.get("language", "fr")
+            if st.session_state.get("language", "fr") in LANGUAGE_LABELS
+            else "fr"
+        ),
     )
 
     st.markdown("### Modèle de langage (LLM)")

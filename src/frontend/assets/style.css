@@ -127,6 +127,11 @@ section[data-testid="stSidebar"] hr { margin: 1.1rem 0; }
     background: var(--mc-surface); color: var(--mc-text); border: 1px solid var(--mc-border);
     border-bottom-left-radius: 5px; box-shadow: var(--mc-shadow);
 }
+.mc-bubble.darija-arabic {
+    direction: rtl;
+    text-align: right;
+    font-family: "Noto Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+}
 .mc-role-label { color: var(--mc-text-muted); font-size: .72rem; font-weight: 650; margin: 0 0 .35rem .15rem; }
 .mc-bubble.user .mc-role-label { color: rgba(255,255,255,.76); }
 .mc-source-chip {

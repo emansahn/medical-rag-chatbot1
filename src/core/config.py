@@ -60,6 +60,12 @@ class Settings(BaseSettings):
     # --- Multilingual bonus ---
     enable_darija_support: bool = False
 
+    # --- Glossary administration ---
+    admin_db_path: str = "./data/glossary/admin.db"
+    admin_bootstrap_username: str = ""
+    admin_bootstrap_password: str = ""
+    admin_session_hours: int = 8
+
     @property
     def cors_origins_list(self) -> List[str]:
         return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]

@@ -46,6 +46,25 @@ bash scripts/run_dev.sh
 - API docs (Swagger): http://localhost:8000/docs
 - Chat UI: http://localhost:8501
 
+## Glossary administration
+
+The Darija medical glossary is stored in SQLite at
+`data/glossary/admin.db`. Create the first administrator interactively from
+the project root; the password is hidden while typing and only its scrypt hash
+is stored:
+
+```bash
+python scripts/create_admin.py
+```
+
+Then open the Streamlit page **Glossary Admin**. Administrator sessions expire
+after `ADMIN_SESSION_HOURS` (8 hours by default). Only glossary terms with the
+`approved` status are used by translation and RAG prompts.
+
+For automated deployment, the first account can instead be bootstrapped once
+with `ADMIN_BOOTSTRAP_USERNAME` and `ADMIN_BOOTSTRAP_PASSWORD`. Use a password
+of at least 12 characters and remove these variables after the first startup.
+
 ## Running tests
 
 ```bash

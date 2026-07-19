@@ -7,7 +7,7 @@ Why this exists:
     changes, only this file changes.
 """
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import Optional
 
 import requests
 
@@ -47,6 +47,51 @@ class BackendClient:
     def send_message(self, question: str, conversation_id: Optional[str], language: str = "fr") -> dict:
         payload = {"question": question, "conversation_id": conversation_id, "language": language}
         return self._post("/chat", payload, timeout=_CHAT_TIMEOUT_SECONDS)
+
+    def admin_login(self, username: str, password: str) -> dict:
+        return self._post("/admin/auth/login", {"username": username, "password": password})
+
+    def admin_me(self, token: str) -> dict:
+        return self._admin_request("GET", "/admin/auth/me", token)
+
+    def admin_logout(self, token: str) -> None:
+        self._admin_request("POST", "/admin/auth/logout", token)
+
+    def glossary_terms(self, token: str, status: str = "", search: str = "") -> list[dict]:
+        params = {key: value for key, value in {"status": status, "search": search}.items() if value}
+        return self._admin_request("GET", "/admin/glossary", token, params=params)
+
+    def create_glossary_term(self, token: str, payload: dict) -> dict:
+        return self._admin_request("POST", "/admin/glossary", token, json=payload)
+
+    def update_glossary_term(self, token: str, term_id: int, payload: dict) -> dict:
+        return self._admin_request("PUT", f"/admin/glossary/{term_id}", token, json=payload)
+
+    def delete_glossary_term(self, token: str, term_id: int) -> None:
+        self._admin_request("DELETE", f"/admin/glossary/{term_id}", token)
+
+    def admin_audit_log(self, token: str) -> list[dict]:
+        return self._admin_request("GET", "/admin/audit", token)
+
+    def _admin_request(self, method: str, path: str, token: str, **kwargs):
+        try:
+            response = requests.request(
+                method,
+                self._url(path),
+                headers={"Authorization": f"Bearer {token}"},
+                timeout=_TIMEOUT_SECONDS,
+                **kwargs,
+            )
+            response.raise_for_status()
+            return None if response.status_code == 204 else response.json()
+        except requests.exceptions.HTTPError as exc:
+            try:
+                detail = exc.response.json().get("detail", str(exc))
+            except Exception:
+                detail = str(exc)
+            raise ApiError(message=detail, status_code=exc.response.status_code) from exc
+        except requests.exceptions.RequestException as exc:
+            raise ApiError(message="Could not reach the administration API.") from exc
 
     def _get(self, path: str) -> dict:
         try:

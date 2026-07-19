@@ -50,6 +50,7 @@ medical-rag-chatbot/
     │   ├── services/                  # mock_rag_service.py (default) / real_rag_service.py
     │   └── container.py                # DI switch, reads RAG_MODE
     ├── analytics/                  # PERSON 3 — sample data generator + CSV export for Power BI
+    ├── admin/                      # SQLite glossary workflow, admin auth, sessions and audit
     ├── backend/                    # PERSON 3 — FastAPI REST API
     │   ├── api/
     │   │   ├── routers/               # chat, health, status, config, analytics
@@ -111,6 +112,14 @@ Streamlit (Chat page)
   zero changes to `backend/` or `frontend/`.
 - Person 1 activates real data the same way, in
   `src/preprocessing/providers/real_providers.py` + `DATA_MODE=real`.
+
+## Controlled Darija glossary administration
+
+The French/Darija glossary is seeded into SQLite on first startup. Its
+administration API requires an expiring bearer session backed by a
+scrypt-hashed administrator password. Every create, update, approval, deletion,
+login, and logout is recorded in `admin_audit_log`. Draft and review entries are
+never exposed to the RAG lookup; only `approved` terms are loaded.
 
 ## Design principles applied
 

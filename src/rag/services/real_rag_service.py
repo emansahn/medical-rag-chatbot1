@@ -49,12 +49,14 @@ class RealRAGService(RAGService):
         from src.rag.prompting.medical_prompt_builder import MedicalPromptBuilder
         from src.rag.retrievers.simple_retriever import SimpleRetriever
         from src.rag.vector_stores.chroma_store import ChromaVectorStore
+        from src.rag.translation.darija_translator import LLMDarijaTranslator
 
         self.embedder = SentenceTransformerEmbedder(settings.embedding_model_name)
         self.vector_store = ChromaVectorStore(settings.vector_store_path)
         self.retriever = SimpleRetriever(self.embedder, self.vector_store)
         self.prompt_builder = MedicalPromptBuilder()
         self.llm = _build_llm_client()
+        self.translator = LLMDarijaTranslator(self.llm)
 
         if not self.vector_store.is_ready():
             logger.warning(
@@ -76,8 +78,25 @@ class RealRAGService(RAGService):
         if not question:
             raise RetrievalError("Cannot answer an empty question.")
 
-        chunks = self.retriever.retrieve(question, top_k=settings.top_k)
-        prompt = self.prompt_builder.build(question, chunks, language)
+        retrieval_question = question
+        if settings.enable_darija_support and language in {"ary", "ary-arab", "ary-latn"}:
+            try:
+                translation = self.translator.to_french(question)
+                retrieval_question = translation.translated_text
+                logger.info("Darija query translated to French for retrieval.")
+            except LLMGenerationError as exc:
+                logger.warning(
+                    "Darija translation failed; falling back to multilingual retrieval: %s",
+                    exc,
+                )
+
+        chunks = self.retriever.retrieve(retrieval_question, top_k=settings.top_k)
+        prompt = self.prompt_builder.build(
+            question,
+            chunks,
+            language,
+            retrieval_question=retrieval_question,
+        )
         response = self.llm.generate(
             prompt, system_prompt=self.prompt_builder.SYSTEM_PROMPT
         )

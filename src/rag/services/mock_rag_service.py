@@ -59,10 +59,15 @@ class MockRAGService(RAGService):
 
         sample_sources = self._rng.sample(_MOCK_KNOWLEDGE_BASE, k=min(2, len(_MOCK_KNOWLEDGE_BASE)))
 
-        if language == "ary":
+        if language == "ary-arab":
             body = (
                 f"سمعتك سولتي: *\"{question}\"*.\n\n"
                 "هادي جواب ديال تجربة (mock) — راه المحرك الحقيقي مازال ما تصاوبش."
+            )
+        elif language in {"ary", "ary-latn"}:
+            body = (
+                f"Sme3tek swelti: *\"{question}\"*.\n\n"
+                "Hada jawab dyal tajriba (mock) — lmo7arrik l7a9i9i mazal ma khddamch."
             )
         else:
             body = (

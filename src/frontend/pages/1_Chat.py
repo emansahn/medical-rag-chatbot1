@@ -49,15 +49,24 @@ def main() -> None:
                 unsafe_allow_html=True,
             )
         for i, msg in enumerate(messages):
-            render_message(msg["role"], msg["content"], msg.get("sources"), msg_index=i)
+            render_message(
+                msg["role"], msg["content"], msg.get("sources"),
+                msg_index=i, language=msg.get("language", "fr"),
+            )
 
     question = st.chat_input("Écrivez votre question médicale…")
 
     if question:
-        st.session_state.messages.append({"role": "user", "content": question, "sources": []})
+        selected_language = st.session_state.language
+        st.session_state.messages.append(
+            {"role": "user", "content": question, "sources": [], "language": selected_language}
+        )
 
         with chat_container:
-            render_message("user", question, msg_index=len(st.session_state.messages))
+            render_message(
+                "user", question, msg_index=len(st.session_state.messages),
+                language=selected_language,
+            )
             placeholder = st.empty()
             with placeholder:
                 render_typing_indicator()
@@ -67,7 +76,7 @@ def main() -> None:
                 response = client.send_message(
                     question=question,
                     conversation_id=st.session_state.conversation_id,
-                    language=st.session_state.language,
+                    language=selected_language,
                 )
                 st.session_state.conversation_id = response["conversation_id"]
                 answer = response["answer"]
@@ -77,8 +86,14 @@ def main() -> None:
                     st.toast("Mode démo : le moteur RAG réel n'est pas encore branché.", icon="⚠️")
 
                 placeholder.empty()
-                render_message("assistant", answer, sources, msg_index=len(st.session_state.messages) + 1)
-                st.session_state.messages.append({"role": "assistant", "content": answer, "sources": sources})
+                render_message(
+                    "assistant", answer, sources,
+                    msg_index=len(st.session_state.messages) + 1,
+                    language=selected_language,
+                )
+                st.session_state.messages.append(
+                    {"role": "assistant", "content": answer, "sources": sources, "language": selected_language}
+                )
 
             except ApiError as exc:
                 placeholder.empty()

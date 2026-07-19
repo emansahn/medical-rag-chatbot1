@@ -29,7 +29,7 @@ class PublicConfigResponse(BaseModel):
     app_name: str
     top_k: int
     enable_darija_support: bool
-    available_languages: list[str] = ["fr", "ary"]
+    available_languages: list[str] = ["fr", "ary-arab", "ary-latn"]
 
 
 class ErrorResponse(BaseModel):

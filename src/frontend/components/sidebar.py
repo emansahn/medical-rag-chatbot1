@@ -4,6 +4,13 @@ import streamlit as st
 from src.frontend.services.api_client import ApiError, get_backend_client
 
 
+LANGUAGE_LABELS = {
+    "fr": "Français",
+    "ary-arab": "الدارجة — حروف عربية",
+    "ary-latn": "Darija — alphabet latin",
+}
+
+
 def render_sidebar() -> None:
     client = get_backend_client()
 
@@ -38,7 +45,14 @@ def render_sidebar() -> None:
         st.divider()
         st.markdown('<div class="mc-section-label">Langue de réponse</div>', unsafe_allow_html=True)
         st.session_state.language = st.selectbox(
-            "Langue", options=["fr", "ary"], format_func=lambda x: "Français" if x == "fr" else "Darija (bonus)",
+            "Langue",
+            options=list(LANGUAGE_LABELS),
+            format_func=lambda code: LANGUAGE_LABELS[code],
+            index=list(LANGUAGE_LABELS).index(
+                st.session_state.get("language", "fr")
+                if st.session_state.get("language", "fr") in LANGUAGE_LABELS
+                else "fr"
+            ),
             label_visibility="collapsed",
         )
 

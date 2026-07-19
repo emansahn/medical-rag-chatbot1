@@ -10,7 +10,8 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from src.backend.api.routers import analytics, chat, config, health, status
+from src.admin.database import get_admin_database
+from src.backend.api.routers import admin, analytics, chat, config, health, status
 from src.core.config import settings
 from src.core.exceptions import AppException
 from src.core.logging_config import configure_logging, get_logger
@@ -22,6 +23,7 @@ logger = get_logger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("%s starting up (env=%s)", settings.app_name, settings.app_env)
+    get_admin_database()
     yield
     logger.info("%s shutting down", settings.app_name)
 
@@ -73,6 +75,7 @@ app.include_router(status.router, prefix=settings.api_prefix)
 app.include_router(config.router, prefix=settings.api_prefix)
 app.include_router(chat.router, prefix=settings.api_prefix)
 app.include_router(analytics.router, prefix=settings.api_prefix)
+app.include_router(admin.router, prefix=settings.api_prefix)
 
 
 @app.get("/", include_in_schema=False)

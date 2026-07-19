@@ -11,11 +11,14 @@ data/processed/*
 data/chunks/*
 data/vector_store/*
 data/analytics/*
+data/glossary/*.db
+data/glossary/*.db-*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/chunks/.gitkeep
 !data/vector_store/.gitkeep
 !data/analytics/.gitkeep
+!data/glossary/.gitkeep
 .DS_Store
 .idea/
 .vscode/

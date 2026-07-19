@@ -54,3 +54,26 @@ def test_build_respects_darija_language_flag():
     )
 
     assert "darija" in prompt.lower()
+
+
+def test_build_uses_arabic_darija_glossary():
+    builder = MedicalPromptBuilder()
+    prompt = builder.build(
+        "واش السكري كيعدي؟", [_chunk("c1", "Le diabète n'est pas contagieux.")],
+        language="ary-arab",
+    )
+
+    assert "السكري" in prompt
+    assert "داء السكري" in prompt
+    assert "بالحروف العربية" in prompt
+
+
+def test_build_uses_latin_darija_glossary():
+    builder = MedicalPromptBuilder()
+    prompt = builder.build(
+        "3ndi wja3 f sder", [_chunk("c1", "Une douleur thoracique exige une évaluation.")],
+        language="ary-latn",
+    )
+
+    assert "douleur thoracique = wja3 f sder" in prompt
+    assert "ghir b-l7orof latiniya" in prompt

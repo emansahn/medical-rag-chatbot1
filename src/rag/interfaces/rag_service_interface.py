@@ -41,9 +41,9 @@ class RAGService(ABC):
         """Answer a medical question, grounded in retrieved sources.
 
         Args:
-            question: The user's question (already translated to French if
-                Darija support is enabled and a Darija translator already ran).
-            language: Target response language ("fr" or "ary" for Darija).
+            question: The user's original question. The real service translates
+                Darija internally for retrieval while preserving this text.
+            language: Target response language and script.
         """
         raise NotImplementedError
 

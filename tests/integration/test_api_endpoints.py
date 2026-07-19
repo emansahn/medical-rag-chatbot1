@@ -40,6 +40,15 @@ def test_chat_endpoint_rejects_empty_question():
     assert response.status_code == 422  # Pydantic validation error
 
 
+def test_chat_endpoint_rejects_unknown_language():
+    response = client.post(
+        "/api/v1/chat",
+        json={"question": "Question", "language": "unknown"},
+    )
+
+    assert response.status_code == 422
+
+
 def test_status_endpoint_reports_mock_mode_by_default():
     response = client.get("/api/v1/status")
     body = response.json()
