@@ -1,5 +1,5 @@
 """Schemas for the analytics/dashboard endpoints."""
-from typing import Dict, List
+from typing import Dict
 
 from pydantic import BaseModel
 

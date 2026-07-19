@@ -1,16 +1,23 @@
-"""Unit tests for the chat service using MockRAGService (no RAG libraries required)."""
+"""Unit tests for the chat service using an isolated RAG test double."""
 import pytest
 
 from src.backend.models.conversation import ConversationRepository
 from src.backend.schemas.chat import ChatRequest
 from src.backend.services.chat_service import ChatService
-from src.core.exceptions import InvalidRequestError
-from src.rag.services.mock_rag_service import MockRAGService
+from src.rag.interfaces.rag_service_interface import RAGAnswer, RAGService
+
+
+class _FakeRAGService(RAGService):
+    def is_ready(self) -> bool:
+        return True
+
+    def answer_question(self, question: str, language: str = "fr") -> RAGAnswer:
+        return RAGAnswer(answer=f"Réponse réelle simulée pour le test: {question}", is_mock=False)
 
 
 @pytest.fixture
 def chat_service() -> ChatService:
-    return ChatService(rag_service=MockRAGService(), conversation_repo=ConversationRepository())
+    return ChatService(rag_service=_FakeRAGService(), conversation_repo=ConversationRepository())
 
 
 def test_handle_message_creates_conversation(chat_service: ChatService):
@@ -19,7 +26,7 @@ def test_handle_message_creates_conversation(chat_service: ChatService):
 
     assert response.conversation_id
     assert response.answer
-    assert response.is_stub is True  # MockRAGService always reports is_mock=True
+    assert response.is_stub is False
 
 
 def test_handle_message_reuses_conversation_id(chat_service: ChatService):

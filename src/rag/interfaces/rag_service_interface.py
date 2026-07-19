@@ -4,11 +4,8 @@ Interface: RAGService — Indexation & Moteur RAG's real contract with the rest 
 This is the ONLY thing the backend depends on. It has zero knowledge of
 FAISS, ChromaDB, LangChain, or sentence-transformers — those are
 implementation details that live behind this interface, inside whichever
-concrete class is injected (`MockRAGService` today, `RealRAGService` once
-the Indexation & Moteur RAG engine is finished).
-
-Because of this, `pip install -r requirements/backend.txt` (no RAG libraries
-at all) is enough to run the full backend against the mock implementation.
+concrete production class is injected. Tests use small local doubles without
+introducing a fake runtime mode in the application.
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
@@ -30,7 +27,7 @@ class RAGAnswer:
 
     answer: str
     sources: List[SourceCitation] = field(default_factory=list)
-    is_mock: bool = True
+    is_mock: bool = False
 
 
 class RAGService(ABC):
@@ -49,7 +46,5 @@ class RAGService(ABC):
 
     @abstractmethod
     def is_ready(self) -> bool:
-        """Whether this is a fully-functional, production-grade engine
-        (False for the mock, True once the real engine is indexed and live).
-        Surfaced by the `/status` endpoint and the frontend's status badge."""
+        """Whether the production engine is indexed and ready."""
         raise NotImplementedError

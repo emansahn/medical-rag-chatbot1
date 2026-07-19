@@ -61,6 +61,16 @@ class LLMDarijaTranslator(DarijaTranslator):
         if not translated:
             raise LLMGenerationError("The Darija translator returned an empty translation.")
 
+        controlled_terms = find_relevant_terms(original)
+        missing_terms = [
+            term
+            for term in controlled_terms
+            if term.casefold() not in translated.casefold()
+        ]
+        acronyms = re.findall(r"\b[A-Z][A-Z0-9-]{1,}\b", original)
+        retrieval_terms = [*missing_terms, *acronyms]
+        if retrieval_terms:
+            translated = f"{translated} {' '.join(dict.fromkeys(retrieval_terms))}"
         return TranslationResult(original_text=original, translated_text=translated)
 
     @staticmethod
@@ -73,3 +83,48 @@ class LLMDarijaTranslator(DarijaTranslator):
             flags=re.IGNORECASE,
         )
         return " ".join(cleaned.split())
+
+
+class LLMDarijaResponseTranslator:
+    """Translate an already grounded French answer without changing its facts."""
+
+    _PROMPTS = {
+        "ary": "darija marocaine naturelle en alphabet latin",
+        "ary-latn": "darija marocaine naturelle en alphabet latin",
+        "ary-arab": "darija marocaine naturelle en alphabet arabe",
+    }
+
+    def __init__(self, llm: LLMClient) -> None:
+        self._llm = llm
+
+    def from_french(self, text: str, language: str) -> str:
+        target = self._PROMPTS.get(language)
+        if not target:
+            raise LLMGenerationError(f"Unsupported Darija output language: {language}")
+        system_prompt = (
+            f"Tu traduis du français vers la {target}. "
+            "Traduis fidèlement sans ajouter, supprimer ou modifier aucune information médicale. "
+            "Conserve exactement toutes les citations comme [1], [2] et tous les nombres. "
+            "N'ajoute ni titre de source, ni URL, ni commentaire. "
+            "N'utilise aucune autre langue, notamment ni français ni chinois. "
+            "Terminologie: vaccination=التلقيح/talqih; vaccin=اللقاح/lliqa7; "
+            "tuberculose=السل/ssel; nouveau-né=مولود جديد/mouloud jdid; "
+            "dose unique=جرعة وحدة/jor3a wa7da; contre-indication=مانع طبي/mane3 tibbi. "
+            "tuberculine=التوبركولين/tuberkulin; revaccination=إعادة التلقيح/i3adat tal9i7; "
+            "Programme National d'Immunisation=البرنامج الوطني للتلقيح/program watani dyal tal9i7. "
+            "Utilise un style marocain simple et quatre phrases courtes au maximum. "
+            "Retourne uniquement la traduction."
+        )
+        response = self._llm.generate(text.strip(), system_prompt=system_prompt)
+        translated = response.answer.strip()
+        if not translated:
+            raise LLMGenerationError("The Darija response translator returned an empty answer.")
+        source_citations = list(
+            dict.fromkeys(re.findall(r"\[\d+(?:-\d+)?\]", text))
+        )
+        missing_citations = [
+            citation for citation in source_citations if citation not in translated
+        ]
+        if missing_citations:
+            translated = f"{translated} {' '.join(missing_citations)}"
+        return translated

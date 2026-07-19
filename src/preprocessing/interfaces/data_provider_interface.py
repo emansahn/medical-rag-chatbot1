@@ -8,7 +8,7 @@ building blocks Person 1 uses inside their own pipeline (`DocumentLoader`,
 the application (analytics dashboard, ingestion scripts, future admin tools)
 is allowed to depend on — never on Person 1's loaders/cleaners directly.
 
-Each has a Mock implementation (`src/preprocessing/providers/mock_providers.py`)
+Tests may provide lightweight doubles, while the application uses the real providers.
 returning small, realistic sample data, so anything built against these
 interfaces works today without Person 1 having collected a single real
 document yet.

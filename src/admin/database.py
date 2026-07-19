@@ -48,6 +48,7 @@ def verify_password(password: str, encoded: str) -> bool:
 
 class AdminDatabase:
     def __init__(self, path: str | None = None) -> None:
+        self._bootstrap_enabled = path is None
         self.path = Path(path or settings.admin_db_path)
 
     @contextmanager
@@ -110,7 +111,8 @@ class AdminDatabase:
                 """
             )
             self._seed_glossary(db)
-        self.bootstrap_admin()
+        if self._bootstrap_enabled:
+            self.bootstrap_admin()
 
     def _seed_glossary(self, db: sqlite3.Connection) -> None:
         now = _iso(_utc_now())

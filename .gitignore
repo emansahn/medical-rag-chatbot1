@@ -9,7 +9,12 @@ venv/
 data/raw/*
 data/processed/*
 data/chunks/*
+data/chunks_v2/*
+data/chunks_curated/*
 data/vector_store/*
+data/vector_store_real/*
+data/vector_store_v2/*
+data/vector_store_curated/*
 data/analytics/*
 data/glossary/*.db
 data/glossary/*.db-*

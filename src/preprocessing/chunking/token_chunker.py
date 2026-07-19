@@ -41,17 +41,21 @@ class TokenChunker(TextChunker):
         if not text:
             return []
 
-        units = self._split_into_units(text)
+        # Token windows provide a real hard cap even for flattened PDF tables
+        # or OCR output with no sentence punctuation. The former paragraph /
+        # sentence implementation could emit >800-token chunks when one
+        # extracted "sentence" alone exceeded the configured maximum.
+        tokens = self._encoding.encode(text)
+        step = self.max_tokens - self.overlap_tokens
+        if step <= 0:
+            raise ValueError("overlap_tokens must be smaller than max_tokens")
+
         chunks: List[DocumentChunk] = []
-        remaining = list(units)
-        overlap_text = ""
-        index = 0
-
-        while remaining:
-            group_units = self._fill_group(overlap_text, remaining)
-            chunk_text = self._join(overlap_text, group_units)
-            chunk_tokens = self._encoding.encode(chunk_text)
-
+        for index, start in enumerate(range(0, len(tokens), step)):
+            window = tokens[start : start + self.max_tokens]
+            if not window:
+                break
+            chunk_text = self._decode_with_hard_cap(window)
             chunks.append(
                 DocumentChunk(
                     chunk_id=f"{document.source_id}-{index}",
@@ -62,15 +66,16 @@ class TokenChunker(TextChunker):
                     metadata=dict(document.metadata),
                 )
             )
-
-            if remaining and self.overlap_tokens > 0:
-                tail_tokens = chunk_tokens[-self.overlap_tokens :]
-                overlap_text = self._encoding.decode(tail_tokens)
-            else:
-                overlap_text = ""
-            index += 1
-
+            if start + self.max_tokens >= len(tokens):
+                break
         return chunks
+
+    def _decode_with_hard_cap(self, tokens: List[int]) -> str:
+        """Decode a window while preserving the serialized token hard cap."""
+        text = self._encoding.decode(tokens).strip()
+        while len(encoded := self._encoding.encode(text)) > self.max_tokens:
+            text = self._encoding.decode(encoded[: self.max_tokens]).strip()
+        return text
 
     def _split_into_units(self, text: str) -> List[str]:
         paragraphs = [p.strip() for p in text.split("\n\n") if p.strip()]

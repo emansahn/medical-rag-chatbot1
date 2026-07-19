@@ -3,7 +3,7 @@ OpenAILLMClient — Indexation & Moteur RAG's `LLMClient` implementation.
 
 `openai` is imported lazily inside `__init__`, matching the rest of this
 module: the file can exist in the repo without forcing the dependency on
-anyone not running `RAG_MODE=real`.
+modules that do not instantiate the production RAG service.
 """
 
 from typing import Optional
@@ -22,7 +22,7 @@ class OpenAILLMClient(LLMClient):
         if not api_key:
             raise LLMGenerationError(
                 "LLM_API_KEY is not configured. Set it in .env (with LLM_PROVIDER=openai) "
-                "before using RAG_MODE=real."
+                "before using the OpenAI production provider."
             )
         from openai import OpenAI
 

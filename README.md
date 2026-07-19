@@ -5,20 +5,11 @@ Module: *Programmation Python Avancée* — AU 2025/2026
 
 A Retrieval-Augmented Generation (RAG) chatbot that answers medical questions
 using **only trusted Moroccan medical sources**, with optional Darija ↔
-Français support — architected so **three people can build it fully in
-parallel**, and so the application **always runs**, even before any of the
-RAG or data-collection work is finished.
+Français support. The application runs exclusively against the production
+PDF corpus and vector index; fake runtime modes are intentionally disabled.
 
----
-```
-RAG_MODE=mock|real      # default: mock — MockRAGService, zero RAG libraries required
-DATA_MODE=mock|real     # default: mock — sample documents/chunks, zero scraping libraries required
-```
-
-**The application boots and is fully demoable in mock mode today**, with
-realistic fake answers and sources, before the data-collection or
-Indexation & Moteur RAG work is finished. See `docs/architecture.md` for the
-full rationale.
+The active corpus is configured with `CHUNKS_PATH`; the persistent Chroma
+index is configured with `VECTOR_STORE_PATH`.
 
 ## 2. Quick start (Person 3 / anyone demoing)
 
@@ -42,15 +33,12 @@ the API reference. Or run both with `bash scripts/run_dev.sh`.
 
 | Flag | Meaning |
 |---|---|
-| `rag_mode` | `mock` (default) or `real` |
-| `data_mode` | `mock` (default) or `real` |
 | `rag_engine_ready` | `True` only once the Indexation & Moteur RAG engine reports ready |
-| `chunks_indexed` | Count from whichever `ChunkProvider` is active |
+| `chunks_indexed` | Count from the production clinical corpus |
 
 ## 4. Documentation
 
-- [`docs/architecture.md`](docs/architecture.md) — the Mock/Real/Container
-  pattern, folder-by-folder rationale, verified independence guarantees
+- [`docs/architecture.md`](docs/architecture.md) — architecture and folder rationale
 - [`docs/collaboration_workflow.md`](docs/collaboration_workflow.md) — git
   branching, PR review rules, integration & testing process
 - [`docs/installation.md`](docs/installation.md) — setup guide

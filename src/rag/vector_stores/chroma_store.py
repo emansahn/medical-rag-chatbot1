@@ -3,7 +3,7 @@ ChromaVectorStore — Indexation & Moteur RAG's `VectorStore` implementation.
 
 Wraps a persistent ChromaDB collection. `chromadb` is imported lazily inside
 `__init__` so this file can exist in the repo without forcing the dependency
-on anyone running in `RAG_MODE=mock`.
+on modules that do not instantiate the production service.
 
 Chroma's metadata values must be flat scalars (str/int/float/bool), so
 `DocumentChunk.metadata` (a free-form dict) is serialized to JSON under a

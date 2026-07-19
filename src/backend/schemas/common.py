@@ -15,8 +15,6 @@ class StatusResponse(BaseModel):
     show teammates' progress honestly instead of pretending everything is done."""
 
     rag_engine_ready: bool
-    rag_mode: str  # "mock" | "real"
-    data_mode: str  # "mock" | "real"
     vector_store_provider: str
     llm_provider: str
     darija_support_enabled: bool

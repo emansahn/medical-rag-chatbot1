@@ -33,6 +33,8 @@ def test_generate_returns_answer_from_local_model():
                 {"role": "system", "content": "system"},
                 {"role": "user", "content": "Question ?"},
             ],
+            options={"num_predict": 256, "temperature": 0.1},
+            keep_alive="30m",
         )
 
 
@@ -45,7 +47,10 @@ def test_generate_without_system_prompt_only_sends_user_message():
         client.generate("Question ?")
 
         instance.chat.assert_called_once_with(
-            model="llama3.2", messages=[{"role": "user", "content": "Question ?"}]
+            model="llama3.2",
+            messages=[{"role": "user", "content": "Question ?"}],
+            options={"num_predict": 256, "temperature": 0.1},
+            keep_alive="30m",
         )
 
 

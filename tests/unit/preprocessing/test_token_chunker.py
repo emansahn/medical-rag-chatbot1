@@ -104,3 +104,23 @@ def test_empty_content_returns_empty_list():
 
     document = _make_document("")
     assert chunker.chunk(document) == []
+
+
+def test_single_unpunctuated_pdf_block_never_exceeds_hard_cap():
+    chunker = TokenChunker(min_tokens=100, max_tokens=450, overlap_tokens=75)
+    document = _make_document("tableaucellule " * 2000)
+
+    chunks = chunker.chunk(document)
+
+    assert len(chunks) > 1
+    assert all(_token_count(chunk.text) <= 450 for chunk in chunks)
+
+
+def test_boundary_whitespace_cannot_exceed_the_serialized_cap():
+    chunker = TokenChunker(min_tokens=10, max_tokens=64, overlap_tokens=8)
+    document = _make_document(" données médicales\n" * 250)
+
+    chunks = chunker.chunk(document)
+
+    assert chunks
+    assert all(_token_count(chunk.text) <= 64 for chunk in chunks)

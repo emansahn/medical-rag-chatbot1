@@ -17,8 +17,8 @@ def post_chat_message(
 ) -> ChatResponse:
     """Send a question and get a RAG-grounded answer with source citations.
 
-    While `RAG_MODE=mock`, `is_stub=true` is returned so the frontend can
-    display an honest "demo mode" badge. `current_user` is a placeholder
+    `is_stub` is retained for API compatibility and is always false in production.
+    `current_user` is a placeholder
     (see `src/core/security.py`) — not enforced today, but already wired so
     real authentication is a one-file change later.
     """

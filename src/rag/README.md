@@ -20,19 +20,13 @@ relevant chunks for a question, and generate a grounded answer.
   Ollama server, no API key required (default, `LLM_PROVIDER=ollama`).
 - `llm/openai_client.py` — `OpenAILLMClient(LLMClient)`, alternative backend
   (`LLM_PROVIDER=openai`, requires `LLM_API_KEY`).
-- `services/mock_rag_service.py` — dependency-free fake engine used when
-  `RAG_MODE=mock` (default), so the rest of the app is demoable without any
-  of this module installed.
-- `services/real_rag_service.py` — wires the components above; used when
-  `RAG_MODE=real`.
-- `container.py` — reads `RAG_MODE` from `.env` and returns Mock or Real.
+- `services/real_rag_service.py` — wires the production components above.
+- `container.py` — returns the production RAG service.
 - `ingest.py` — chunks (via `get_chunk_provider()`) → embeddings → vector store.
 
-## Activating the real engine
+## Configuring the engine
 
 ```bash
-# .env
-RAG_MODE=real
 LLM_PROVIDER=ollama   # or openai
 ```
 

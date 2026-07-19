@@ -20,8 +20,7 @@ def main() -> None:
     chunks = get_chunk_provider().list_chunks()
     if not chunks:
         raise SystemExit(
-            "No chunks available from the ChunkProvider. Check DATA_MODE in .env, or run "
-            "Person 1's pipeline first if DATA_MODE=real."
+            "No production chunks are available. Run the preprocessing pipeline first."
         )
 
     from src.rag.embedders.sentence_transformer_embedder import (

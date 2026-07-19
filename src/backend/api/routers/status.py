@@ -18,8 +18,6 @@ def get_status(
 ) -> StatusResponse:
     return StatusResponse(
         rag_engine_ready=rag_service.is_ready(),
-        rag_mode=settings.rag_mode,
-        data_mode=settings.data_mode,
         vector_store_provider=settings.vector_store_provider,
         llm_provider=settings.llm_provider,
         darija_support_enabled=settings.enable_darija_support,

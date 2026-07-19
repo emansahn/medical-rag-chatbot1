@@ -5,7 +5,7 @@ Uses a multilingual sentence-transformers model so French and Darija (once
 transliterated) queries embed into the same space as the French source
 corpus. Import of `sentence_transformers` stays inside `__init__`, not at
 module level, so this file can sit in the repo without forcing the
-dependency on anyone who isn't running `RAG_MODE=real`.
+dependency on modules that do not instantiate the production service.
 """
 
 from typing import List

@@ -79,3 +79,16 @@ def test_retrieve_rejects_empty_query():
 
     with pytest.raises(RetrievalError):
         retriever.retrieve("   ", top_k=3)
+
+
+def test_retrieve_reranks_exact_medical_terms_over_slightly_higher_vector_score():
+    results = _make_results(2)
+    results[0].chunk.text = "Organisation générale du programme tuberculose."
+    results[0].score = 0.78
+    results[1].chunk.text = "La vaccination BCG est administrée aux nouveau-nés."
+    results[1].score = 0.70
+    retriever = SimpleRetriever(_FakeEmbedder(), _FakeVectorStore(results))
+
+    ranked = retriever.retrieve("recommandations vaccination BCG", top_k=1)
+
+    assert ranked[0].chunk.chunk_id == "c1"

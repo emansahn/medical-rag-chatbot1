@@ -1,17 +1,4 @@
-"""
-RAG service container — the single place that decides which `RAGService`
-implementation the app runs against.
-
-Controlled by `RAG_MODE` in `.env`:
-    RAG_MODE=mock   (default) -> MockRAGService, zero heavy dependencies.
-    RAG_MODE=real              -> RealRAGService, requires
-                                   requirements/person2-rag.txt and a
-                                   finished Indexation & Moteur RAG implementation.
-
-Nothing outside this file ever chooses between Mock/Real directly — routers
-and services only ever see the `RAGService` interface (dependency inversion).
-"""
-from src.core.config import settings
+"""Production RAG service dependency container."""
 from src.core.logging_config import get_logger
 from src.rag.interfaces.rag_service_interface import RAGService
 
@@ -21,16 +8,10 @@ _service_instance: "RAGService | None" = None
 
 
 def _build_service() -> RAGService:
-    if settings.rag_mode == "real":
-        logger.info("RAG_MODE=real — instantiating RealRAGService (Indexation & Moteur RAG engine).")
-        from src.rag.services.real_rag_service import RealRAGService  # local import: only pulled in when needed
+    logger.info("Instantiating production RealRAGService.")
+    from src.rag.services.real_rag_service import RealRAGService
 
-        return RealRAGService()
-
-    logger.info("RAG_MODE=mock — instantiating MockRAGService (no RAG dependencies required).")
-    from src.rag.services.mock_rag_service import MockRAGService
-
-    return MockRAGService()
+    return RealRAGService()
 
 
 def get_rag_service() -> RAGService:

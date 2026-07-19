@@ -6,7 +6,7 @@ rest of the app never imports a vector-DB SDK directly.
 """
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, List
+from typing import List
 
 from src.preprocessing.interfaces.document_loader_interface import DocumentChunk
 

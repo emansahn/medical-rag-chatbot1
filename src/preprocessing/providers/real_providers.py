@@ -10,10 +10,10 @@ import json
 from pathlib import Path
 from typing import List
 
+from src.core.config import settings
 from src.preprocessing.interfaces.data_provider_interface import ChunkProvider, Dataset, DatasetLoader, DocumentProvider
 from src.preprocessing.interfaces.document_loader_interface import DocumentChunk, RawDocument
 
-_CHUNKS_PATH = Path("data/chunks")
 _PROCESSED_PATH = Path("data/processed")
 
 
@@ -36,10 +36,12 @@ class RealChunkProvider(ChunkProvider):
 
     def list_chunks(self) -> List[DocumentChunk]:
         chunks = []
-        for file in _CHUNKS_PATH.glob("*.jsonl"):
-            for line in file.read_text(encoding="utf-8").splitlines():
-                if line.strip():
-                    chunks.append(DocumentChunk(**json.loads(line)))
+        chunks_path = Path(settings.chunks_path)
+        for file in sorted(chunks_path.glob("*.jsonl")):
+            with file.open(encoding="utf-8") as lines:
+                for line in lines:
+                    if line.strip():
+                        chunks.append(DocumentChunk(**json.loads(line)))
         return chunks
 
     def count(self) -> int:

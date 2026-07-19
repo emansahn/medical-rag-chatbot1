@@ -14,11 +14,8 @@ engine (`src/rag/`) can embed and index.
 - `interfaces/data_provider_interface.py` — the **app-facing** contract:
   `DocumentProvider`, `ChunkProvider`, `DatasetLoader`, `Dataset`. This is
   what the rest of the app (analytics, dashboard, future admin tools) depends on.
-- `providers/mock_providers.py` — already-working sample data. This is why
-  the whole app runs today without you having collected anything yet.
-- `providers/real_providers.py` — your integration point (see below).
-- `container.py` — reads `DATA_MODE` from `.env` and returns Mock or Real.
-  You never edit this file.
+- `providers/real_providers.py` — the production integration point.
+- `container.py` — always returns the production providers.
 
 ## What you build here
 
@@ -46,14 +43,13 @@ src/preprocessing/
    from exactly these paths. If your field names differ, adjust that file
    (it's the one file you're expected to touch, since it's your integration seam).
 
-## Activating your real data
+## Production data
 
 ```bash
-# .env
-DATA_MODE=real
+CHUNKS_PATH=./data/chunks_curated
 ```
-Restart the backend. `/api/v1/status` and the sidebar will now report real
-chunk counts instead of the mock sample count.
+Restart the backend. `/api/v1/status` and the sidebar report the production
+chunk count.
 
 ## Testing
 

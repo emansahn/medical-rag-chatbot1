@@ -19,7 +19,7 @@ logger = get_logger(__name__)
 
 class ChatService:
     """Depends only on the `RAGService` interface — it never knows, and never
-    needs to know, whether it's talking to `MockRAGService` or `RealRAGService`."""
+    remains decoupled from the concrete production RAG implementation."""
 
     def __init__(self, rag_service: RAGService, conversation_repo: ConversationRepository) -> None:
         self._rag = rag_service

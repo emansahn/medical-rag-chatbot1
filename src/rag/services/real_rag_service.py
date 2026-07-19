@@ -8,7 +8,7 @@ dependency-free of any API key, or "openai") — adding a new backend later
 means one new `LLMClient` implementation plus one branch in
 `_build_llm_client`, nothing else in this file changes (Open/Closed).
 Heavy imports stay lazy inside `__init__`: this file only pulls in
-sentence-transformers/chromadb/ollama the moment `RAG_MODE=real` actually
+sentence-transformers/chromadb/ollama when the production service actually
 instantiates it.
 """
 
@@ -29,13 +29,33 @@ def _build_llm_client() -> LLMClient:
     if settings.llm_provider == "ollama":
         from src.rag.llm.ollama_client import OllamaLLMClient
 
-        return OllamaLLMClient(settings.llm_model_name, settings.llm_base_url)
+        return OllamaLLMClient(
+            settings.llm_model_name,
+            settings.llm_base_url,
+            num_predict=settings.llm_num_predict,
+            temperature=settings.llm_temperature,
+            keep_alive=settings.llm_keep_alive,
+        )
     if settings.llm_provider == "openai":
         from src.rag.llm.openai_client import OpenAILLMClient
 
         return OpenAILLMClient(settings.llm_model_name, settings.llm_api_key)
     raise LLMGenerationError(
         f"Unsupported LLM_PROVIDER={settings.llm_provider!r}. Use 'ollama' (local) or 'openai'."
+    )
+
+
+def _build_darija_llm_client(default: LLMClient) -> LLMClient:
+    if not settings.darija_llm_model_name or settings.llm_provider != "ollama":
+        return default
+    from src.rag.llm.ollama_client import OllamaLLMClient
+
+    return OllamaLLMClient(
+        settings.darija_llm_model_name,
+        settings.llm_base_url,
+        num_predict=settings.llm_num_predict,
+        temperature=settings.llm_temperature,
+        keep_alive=settings.llm_keep_alive,
     )
 
 
@@ -49,14 +69,19 @@ class RealRAGService(RAGService):
         from src.rag.prompting.medical_prompt_builder import MedicalPromptBuilder
         from src.rag.retrievers.simple_retriever import SimpleRetriever
         from src.rag.vector_stores.chroma_store import ChromaVectorStore
-        from src.rag.translation.darija_translator import LLMDarijaTranslator
+        from src.rag.translation.darija_translator import (
+            LLMDarijaResponseTranslator,
+            LLMDarijaTranslator,
+        )
 
         self.embedder = SentenceTransformerEmbedder(settings.embedding_model_name)
         self.vector_store = ChromaVectorStore(settings.vector_store_path)
         self.retriever = SimpleRetriever(self.embedder, self.vector_store)
         self.prompt_builder = MedicalPromptBuilder()
         self.llm = _build_llm_client()
-        self.translator = LLMDarijaTranslator(self.llm)
+        darija_llm = _build_darija_llm_client(self.llm)
+        self.translator = LLMDarijaTranslator(darija_llm)
+        self.response_translator = LLMDarijaResponseTranslator(darija_llm)
 
         if not self.vector_store.is_ready():
             logger.warning(
@@ -91,14 +116,19 @@ class RealRAGService(RAGService):
                 )
 
         chunks = self.retriever.retrieve(retrieval_question, top_k=settings.top_k)
+        is_darija = language in {"ary", "ary-arab", "ary-latn"}
         prompt = self.prompt_builder.build(
-            question,
+            retrieval_question if is_darija else question,
             chunks,
-            language,
-            retrieval_question=retrieval_question,
+            "fr" if is_darija else language,
         )
         response = self.llm.generate(
             prompt, system_prompt=self.prompt_builder.SYSTEM_PROMPT
+        )
+        answer = (
+            self.response_translator.from_french(response.answer, language)
+            if is_darija
+            else response.answer
         )
 
         sources = [
@@ -109,4 +139,4 @@ class RealRAGService(RAGService):
             )
             for item in chunks
         ]
-        return RAGAnswer(answer=response.answer, sources=sources, is_mock=False)
+        return RAGAnswer(answer=answer, sources=sources, is_mock=False)

@@ -41,21 +41,20 @@ class Settings(BaseSettings):
     # --- Frontend ---
     backend_api_url: str = "http://localhost:8000/api/v1"
 
-    # --- Mode switches (dependency injection control) ---
-    # "mock" requires no heavy libraries; "real" requires the data-collection
-    # and Indexation & Moteur RAG implementations + their requirements files to be installed.
-    rag_mode: str = "mock"       # mock | real
-    data_mode: str = "mock"      # mock | real
-
     # --- RAG engine (Indexation & Moteur RAG) ---
     llm_provider: str = "ollama"     # ollama (local, default) | openai
     llm_model_name: str = "llama3.1:8b"
     llm_api_key: str = ""
     llm_base_url: str = "http://localhost:11434"
     embedding_model_name: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+    chunks_path: str = "./data/chunks"
     vector_store_provider: str = "chroma"
     vector_store_path: str = "./data/vector_store"
     top_k: int = 4
+    llm_num_predict: int = 256
+    llm_temperature: float = 0.1
+    llm_keep_alive: str = "30m"
+    darija_llm_model_name: str = ""
 
     # --- Multilingual bonus ---
     enable_darija_support: bool = False

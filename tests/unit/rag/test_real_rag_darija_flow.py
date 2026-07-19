@@ -45,7 +45,16 @@ class _PromptBuilder:
 
 class _LLM:
     def generate(self, prompt, system_prompt=None):
-        return LLMResponse("لا، السكري ما كيعداش [1].", "fake")
+        return LLMResponse("Non, le diabète n'est pas contagieux [1].", "fake")
+
+
+class _ResponseTranslator:
+    def __init__(self) -> None:
+        self.arguments = None
+
+    def from_french(self, text, language):
+        self.arguments = (text, language)
+        return "لا، السكري ما كيعداش [1]."
 
 
 def test_darija_is_translated_only_for_retrieval(monkeypatch):
@@ -57,14 +66,19 @@ def test_darija_is_translated_only_for_retrieval(monkeypatch):
     service.retriever = _Retriever()
     service.prompt_builder = _PromptBuilder()
     service.llm = _LLM()
+    service.response_translator = _ResponseTranslator()
 
     answer = service.answer_question("واش السكري كيعدي؟", language="ary-arab")
 
     assert service.retriever.query == "Est-ce que le diabète est contagieux ?"
     assert service.prompt_builder.arguments == (
-        "واش السكري كيعدي؟",
-        "ary-arab",
         "Est-ce que le diabète est contagieux ?",
+        "fr",
+        None,
+    )
+    assert service.response_translator.arguments == (
+        "Non, le diabète n'est pas contagieux [1].",
+        "ary-arab",
     )
     assert answer.answer == "لا، السكري ما كيعداش [1]."
     assert answer.sources[0].title == "Guide médical"
