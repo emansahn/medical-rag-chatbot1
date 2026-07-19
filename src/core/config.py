@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     # --- General ---
     app_name: str = "Medical RAG Chatbot"
     app_env: str = "development"
-    debug: bool = True
+    app_debug: bool = False
     log_level: str = "INFO"
 
     # --- Backend API ---
